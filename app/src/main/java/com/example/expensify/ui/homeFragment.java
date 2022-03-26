@@ -310,10 +310,11 @@ public class homeFragment extends Fragment {
                                 if (budget == null) {
                                     budget = "0";
                                 } else if (finalTotalAmount > Integer.parseInt(Objects.requireNonNull(budget))) {
-                                    if (getActivity() != null) {
-                                        getActivity().runOnUiThread(homeFragment.this::showBudgetExceeded);
+                                    if (getContext() != null) {
+                                        showBudgetExceeded();
                                     }
                                 }
+                                homeRef3.removeEventListener(this);
                             }
 
                             @Override
@@ -321,7 +322,6 @@ public class homeFragment extends Fragment {
 
                             }
                         });
-                        homeRef3.removeEventListener(this);
                     }
                 }
 
@@ -693,16 +693,13 @@ public class homeFragment extends Fragment {
     }
 
     public void showBudgetExceeded() {
-        AlertDialog.Builder myDialog = new AlertDialog.Builder(getContext());
-        myDialog.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        View myView = inflater.inflate(R.layout.custom_alert_budget_exceeded, null);
-        myDialog.setView(myView);
-        final AlertDialog dialog = myDialog.create();
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
+        bottomSheetDialog.setContentView(R.layout.custom_alert_budget_exceeded);
+        bottomSheetDialog.setCancelable(true);
+        bottomSheetDialog.setCanceledOnTouchOutside(true);
+        bottomSheetDialog.show();
 
-        budgetExdAvatar = myView.findViewById(R.id.budgetExdImg);
+        budgetExdAvatar = (ImageView) bottomSheetDialog.findViewById(R.id.budgetExdImg);
 
         database4 = FirebaseDatabase.getInstance();
         homeRef4 = database4.getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("avatar");
