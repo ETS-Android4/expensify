@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -34,6 +36,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 public class currencyAdapter extends AppCompatActivity {
@@ -48,6 +51,7 @@ public class currencyAdapter extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseDatabase database, currDB;
     DatabaseReference myRef, currRef;
+    List<String> searchList;
     private ProgressDialog progressDialog;
 
     public static String setUserCurrency() {
@@ -89,7 +93,7 @@ public class currencyAdapter extends AppCompatActivity {
         getData.execute();
 
         currDB = FirebaseDatabase.getInstance();
-        currRef = currDB.getReference("Users").child(mAuth.getCurrentUser().getUid()).child("currency");
+        currRef = currDB.getReference("Users").child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid()).child("currency");
         currRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -163,6 +167,7 @@ public class currencyAdapter extends AppCompatActivity {
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 JSONArray jsonArray = jsonObject.getJSONArray("Currency");
+
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject1 = jsonArray.getJSONObject(i);
                     name = jsonObject1.getString("name");
@@ -174,6 +179,44 @@ public class currencyAdapter extends AppCompatActivity {
                     currency.put("code", currencyCode);
                     currencyList.add(currency);
                 }
+
+                searchList = new ArrayList<>();
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    final JSONObject e = jsonArray.getJSONObject(i);
+                    name = e.getString("name");
+                    searchList.add(name);
+                }
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, searchList);
+                AutoCompleteTextView textView = findViewById(R.id.atv);
+                textView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+
+                textView.setOnItemClickListener((parent, view, position, id) -> {
+                    String selected = (String) parent.getItemAtPosition(position);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject e = null;
+                        try {
+                            e = jsonArray.getJSONObject(i);
+                        } catch (JSONException jsonException) {
+                            jsonException.printStackTrace();
+                        }
+                        try {
+                            if (e != null && e.getString("name").equals(selected)) {
+                                currencySymbol = e.getString("symbol");
+                                currencyCode = e.getString("code");
+                                break;
+                            }
+                        } catch (JSONException jsonException) {
+                            jsonException.printStackTrace();
+                        }
+                    }
+                    myRef2.setValue(currencySymbol);
+                    Toast.makeText(getApplicationContext(), "Currency Changed to " + selected, Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(), userDashboard.class);
+                    startActivity(intent);
+                });
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

@@ -18,6 +18,14 @@
         android:textColor="@color/black"
         android:textSize="20sp" />
 
+    <AutoCompleteTextView
+        android:id="@+id/atv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableEnd="@drawable/search"
+        android:hint="Search"
+        android:textAlignment="center" />
+
     <ListView
         android:id="@+id/currencyList"
         android:layout_width="match_parent"
