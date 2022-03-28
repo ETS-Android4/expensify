@@ -4,11 +4,13 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/drawable/add.xml" value="0.16023166023166024" />
+        <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/drawable/avatar.xml" value="0.127" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/drawable/cancel.xml" value="0.131" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/drawable/currency.xml" value="0.128" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/drawable/currency_dollar.xml" value="0.131" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/drawable/currency_pound.xml" value="0.131" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/drawable/custom_border.xml" value="0.2" />
+        <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/drawable/custom_button_shape.xml" value="0.127" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/drawable/delete.xml" value="0.131" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/drawable/delete_red.xml" value="0.131" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/drawable/down.xml" value="0.131" />
@@ -27,6 +29,7 @@
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/drawable/rounded_alert_dialog.xml" value="0.13" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/drawable/rounded_bottom_sheet_dialog.xml" value="0.13" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/drawable/save.xml" value="0.131" />
+        <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/drawable/search.xml" value="0.127" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/drawable/show_password_selector.xml" value="0.127" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/drawable/sign_in.xml" value="0.1255" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/drawable/skip.xml" value="0.131" />
@@ -63,16 +66,16 @@
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/layout/custom_delete_account.xml" value="0.17" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/layout/custom_delete_transactions.xml" value="0.18" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/layout/custom_filter_transaction.xml" value="0.16" />
-        <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/layout/custom_wallet_warning.xml" value="0.21" />
+        <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/layout/custom_wallet_warning.xml" value="0.17" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/layout/edit_profile_layout.xml" value="0.17" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/layout/expense_adapter.xml" value="0.18" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/layout/expense_layout.xml" value="0.18" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/layout/fragment_first.xml" value="0.16" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/layout/fragment_history.xml" value="0.12670765027322403" />
-        <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/layout/fragment_home.xml" value="0.16" />
+        <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/layout/fragment_home.xml" value="0.18" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/layout/fragment_login.xml" value="0.13046448087431695" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/layout/fragment_profile.xml" value="0.16" />
-        <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/layout/fragment_transaction.xml" value="0.17" />
+        <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/layout/fragment_transaction.xml" value="0.18" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/layout/income_adapter.xml" value="0.16" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/layout/income_layout.xml" value="0.18" />
         <entry key="..\:/Users/Ayman/AndroidStudioProjects/Expensify/app/src/main/res/layout/retrieve_layout.xml" value="0.17" />

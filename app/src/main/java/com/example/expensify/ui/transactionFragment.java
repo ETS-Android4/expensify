@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -35,6 +36,7 @@ public class transactionFragment extends Fragment {
 
     public List<expenseModel> transList;
     public android.app.AlertDialog filterDialog;
+    public TextView upDel;
     public ConstraintLayout transLayout;
     public Button filterTrans, deleteTrans, filterExpense, filterIncome, expenseCategory, incomeCategory;
     ListView listView;
@@ -49,6 +51,8 @@ public class transactionFragment extends Fragment {
 
         filterTrans = view.findViewById(R.id.filter_transaction);
         deleteTrans = view.findViewById(R.id.delete_transaction);
+
+        upDel = view.findViewById(R.id.upDel);
 
         filterTrans.setOnClickListener(v -> alertFilterTransactions());
         deleteTrans.setOnClickListener(v -> alertDeleteTransactions());
@@ -68,12 +72,16 @@ public class transactionFragment extends Fragment {
                     expenseModel p = d.getValue(expenseModel.class);
                     if (p == null) {
                         if (getActivity() != null) {
-                            getActivity().runOnUiThread(() -> transLayout.setVisibility(View.VISIBLE));
+                            getActivity().runOnUiThread(() -> {
+                                transLayout.setVisibility(View.VISIBLE);
+                                upDel.setText("");
+                            });
                         }
                     } else {
                         if (getActivity() != null) {
                             getActivity().runOnUiThread(() -> {
                                 transLayout.setVisibility(View.GONE);
+                                upDel.setText("Click on a Transaction card to Update or Delete your transaction ✌️");
                                 transList.add(p);
                             });
                         }
@@ -100,10 +108,10 @@ public class transactionFragment extends Fragment {
         myDialog.setPositiveButton("Delete", (dialog, which) -> homeRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() == null) {
-                    Toast.makeText(getContext(), "No Transactions to Delete", Toast.LENGTH_SHORT).show();
-                } else {
-                    if (getContext() != null) {
+                if (getContext() != null) {
+                    if (dataSnapshot.getValue() == null) {
+                        Toast.makeText(getContext(), "No Transactions to Delete", Toast.LENGTH_SHORT).show();
+                    } else {
                         homeRef.removeValue();
                         userBankRef.addValueEventListener(new ValueEventListener() {
                             @Override
@@ -121,12 +129,12 @@ public class transactionFragment extends Fragment {
 
                             }
                         });
+                        Intent i = new Intent(getContext(), userDashboard.class);
+                        startActivity(i);
+                        Toast.makeText(getContext(), "All Transactions Deleted!", Toast.LENGTH_SHORT).show();
                     }
-                    Intent i = new Intent(getContext(), userDashboard.class);
-                    startActivity(i);
-                    Toast.makeText(getContext(), "All Transactions Deleted!", Toast.LENGTH_SHORT).show();
+                    homeRef.removeEventListener(this);
                 }
-                homeRef.removeEventListener(this);
             }
 
             @Override
@@ -156,75 +164,8 @@ public class transactionFragment extends Fragment {
         expenseCategory = myView.findViewById(R.id.expense_category);
         incomeCategory = myView.findViewById(R.id.income_category);
 
-        filterExpense.setOnClickListener(v -> {
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("Transactions");
-            ref.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.getValue() == null) {
-                        Toast.makeText(getContext(), "No Transactions to Filter", Toast.LENGTH_SHORT).show();
-                    } else {
-                        if (getContext() != null) {
-                            ArrayList<expenseModel> list = new ArrayList<>();
-                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                expenseModel p = ds.getValue(expenseModel.class);
-                                if (Objects.requireNonNull(p).getType().equals("expense")) {
-                                    list.add(p);
-                                    filterDialog.dismiss();
-                                }
-                            }
-                            if (list.size() > 0) {
-                                transactionAdapter adapter = new transactionAdapter(getContext(), list);
-                                listView.setAdapter(adapter);
-                                adapter.notifyDataSetChanged();
-                            } else {
-                                Toast.makeText(getContext(), "No Expenses to Filter", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-        });
-
-        filterIncome.setOnClickListener(v -> {
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("Transactions");
-            ref.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.getValue() == null) {
-                        Toast.makeText(getContext(), "No Transactions to Filter", Toast.LENGTH_SHORT).show();
-                    } else {
-                        if (getContext() != null) {
-                            ArrayList<expenseModel> list = new ArrayList<>();
-                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                expenseModel p = ds.getValue(expenseModel.class);
-                                if (Objects.requireNonNull(p).getType().equals("income")) {
-                                    list.add(p);
-                                    filterDialog.dismiss();
-                                }
-                            }
-                            if (list.size() > 0) {
-                                transactionAdapter adapter = new transactionAdapter(getContext(), list);
-                                listView.setAdapter(adapter);
-                                adapter.notifyDataSetChanged();
-                            } else {
-                                Toast.makeText(getContext(), "No Incomes to Filter", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-        });
+        filterExpense.setOnClickListener(v -> filterType("expense"));
+        filterIncome.setOnClickListener(v -> filterType("income"));
         expenseCategory.setOnClickListener(v -> showBottomSheetExpenseDialog());
         incomeCategory.setOnClickListener(v -> showBottomSheetIncomeDialog());
     }
@@ -248,343 +189,64 @@ public class transactionFragment extends Fragment {
 
         if (fEntertainment != null) {
             fEntertainment.setOnClickListener(v -> {
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("Transactions");
-                ref.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() == null) {
-                            Toast.makeText(getContext(), "No Transactions to Filter", Toast.LENGTH_SHORT).show();
-                        } else {
-                            if (getContext() != null) {
-                                ArrayList<expenseModel> list = new ArrayList<>();
-                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                    expenseModel p = ds.getValue(expenseModel.class);
-                                    if (Objects.requireNonNull(p).getCategory().equals("Entertainment")) {
-                                        list.add(p);
-                                        bottomSheetDialog.dismiss();
-                                        filterDialog.dismiss();
-                                    }
-                                }
-                                if (list.size() > 0) {
-                                    transactionAdapter adapter = new transactionAdapter(getContext(), list);
-                                    listView.setAdapter(adapter);
-                                    adapter.notifyDataSetChanged();
-                                } else {
-                                    Toast.makeText(getContext(), "No Entertainment Transactions", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+                filterCategory("Entertainment");
+                bottomSheetDialog.dismiss();
             });
         }
 
         if (fSubscription != null) {
             fSubscription.setOnClickListener(v -> {
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("Transactions");
-                ref.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() == null) {
-                            Toast.makeText(getContext(), "No Transactions to Filter", Toast.LENGTH_SHORT).show();
-                        } else {
-                            if (getContext() != null) {
-                                ArrayList<expenseModel> list = new ArrayList<>();
-                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                    expenseModel p = ds.getValue(expenseModel.class);
-                                    if (Objects.requireNonNull(p).getCategory().equals("Subscription")) {
-                                        list.add(p);
-                                        bottomSheetDialog.dismiss();
-                                        filterDialog.dismiss();
-                                    }
-                                }
-                                if (list.size() > 0) {
-                                    transactionAdapter adapter = new transactionAdapter(getContext(), list);
-                                    listView.setAdapter(adapter);
-                                    adapter.notifyDataSetChanged();
-                                } else {
-                                    Toast.makeText(getContext(), "No Subscription Transactions", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+                filterCategory("Subscription");
+                bottomSheetDialog.dismiss();
             });
         }
 
         if (fHealth != null) {
             fHealth.setOnClickListener(v -> {
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("Transactions");
-                ref.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() == null) {
-                            Toast.makeText(getContext(), "No Transactions to Filter", Toast.LENGTH_SHORT).show();
-                        } else {
-                            if (getContext() != null) {
-                                ArrayList<expenseModel> list = new ArrayList<>();
-                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                    expenseModel p = ds.getValue(expenseModel.class);
-                                    if (Objects.requireNonNull(p).getCategory().equals("Health Care")) {
-                                        list.add(p);
-                                        bottomSheetDialog.dismiss();
-                                        filterDialog.dismiss();
-                                    }
-                                }
-                                if (list.size() > 0) {
-                                    transactionAdapter adapter = new transactionAdapter(getContext(), list);
-                                    listView.setAdapter(adapter);
-                                    adapter.notifyDataSetChanged();
-                                } else {
-                                    Toast.makeText(getContext(), "No Health Care Transactions", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+                filterCategory("Health Care");
+                bottomSheetDialog.dismiss();
             });
         }
 
         if (fInvestment != null) {
             fInvestment.setOnClickListener(v -> {
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("Transactions");
-                ref.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() == null) {
-                            Toast.makeText(getContext(), "No Transactions to Filter", Toast.LENGTH_SHORT).show();
-                        } else {
-                            if (getContext() != null) {
-                                ArrayList<expenseModel> list = new ArrayList<>();
-                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                    expenseModel p = ds.getValue(expenseModel.class);
-                                    if (Objects.requireNonNull(p).getCategory().equals("Investment")) {
-                                        list.add(p);
-                                        bottomSheetDialog.dismiss();
-                                        filterDialog.dismiss();
-                                    }
-                                }
-                                if (list.size() > 0) {
-                                    transactionAdapter adapter = new transactionAdapter(getContext(), list);
-                                    listView.setAdapter(adapter);
-                                    adapter.notifyDataSetChanged();
-                                } else {
-                                    Toast.makeText(getContext(), "No Investment Transactions", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+                filterCategory("Investment");
+                bottomSheetDialog.dismiss();
             });
         }
 
         if (fUtilities != null) {
             fUtilities.setOnClickListener(v -> {
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("Transactions");
-                ref.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() == null) {
-                            Toast.makeText(getContext(), "No Transactions to Filter", Toast.LENGTH_SHORT).show();
-                        } else {
-                            if (getContext() != null) {
-                                ArrayList<expenseModel> list = new ArrayList<>();
-                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                    expenseModel p = ds.getValue(expenseModel.class);
-                                    if (Objects.requireNonNull(p).getCategory().equals("Utilities")) {
-                                        list.add(p);
-                                        bottomSheetDialog.dismiss();
-                                        filterDialog.dismiss();
-                                    }
-                                }
-                                if (list.size() > 0) {
-                                    transactionAdapter adapter = new transactionAdapter(getContext(), list);
-                                    listView.setAdapter(adapter);
-                                    adapter.notifyDataSetChanged();
-                                } else {
-                                    Toast.makeText(getContext(), "No Utilities Transactions", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+                filterCategory("Utilities");
+                bottomSheetDialog.dismiss();
             });
         }
 
         if (fTransport != null) {
             fTransport.setOnClickListener(v -> {
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("Transactions");
-                ref.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() == null) {
-                            Toast.makeText(getContext(), "No Transactions to Filter", Toast.LENGTH_SHORT).show();
-                        } else {
-                            if (getContext() != null) {
-                                ArrayList<expenseModel> list = new ArrayList<>();
-                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                    expenseModel p = ds.getValue(expenseModel.class);
-                                    if (Objects.requireNonNull(p).getCategory().equals("Transport")) {
-                                        list.add(p);
-                                        bottomSheetDialog.dismiss();
-                                        filterDialog.dismiss();
-                                    }
-                                }
-                                if (list.size() > 0) {
-                                    transactionAdapter adapter = new transactionAdapter(getContext(), list);
-                                    listView.setAdapter(adapter);
-                                    adapter.notifyDataSetChanged();
-                                } else {
-                                    Toast.makeText(getContext(), "No Transport Transactions", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+                filterCategory("Transport");
+                bottomSheetDialog.dismiss();
             });
         }
 
         if (fShopping != null) {
             fShopping.setOnClickListener(v -> {
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("Transactions");
-                ref.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() == null) {
-                            Toast.makeText(getContext(), "No Transactions to Filter", Toast.LENGTH_SHORT).show();
-                        } else {
-                            if (getContext() != null) {
-                                ArrayList<expenseModel> list = new ArrayList<>();
-                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                    expenseModel p = ds.getValue(expenseModel.class);
-                                    if (Objects.requireNonNull(p).getCategory().equals("Shopping")) {
-                                        list.add(p);
-                                        bottomSheetDialog.dismiss();
-                                        filterDialog.dismiss();
-                                    }
-                                }
-                                if (list.size() > 0) {
-                                    transactionAdapter adapter = new transactionAdapter(getContext(), list);
-                                    listView.setAdapter(adapter);
-                                    adapter.notifyDataSetChanged();
-                                } else {
-                                    Toast.makeText(getContext(), "No Shopping Transactions", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+                filterCategory("Shopping");
+                bottomSheetDialog.dismiss();
             });
         }
 
         if (fFood != null) {
             fFood.setOnClickListener(v -> {
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("Transactions");
-                ref.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() == null) {
-                            Toast.makeText(getContext(), "No Transactions to Filter", Toast.LENGTH_SHORT).show();
-                        } else {
-                            if (getContext() != null) {
-                                ArrayList<expenseModel> list = new ArrayList<>();
-                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                    expenseModel p = ds.getValue(expenseModel.class);
-                                    if (Objects.requireNonNull(p).getCategory().equals("Food")) {
-                                        list.add(p);
-                                        bottomSheetDialog.dismiss();
-                                        filterDialog.dismiss();
-                                    }
-                                }
-                                if (list.size() > 0) {
-                                    transactionAdapter adapter = new transactionAdapter(getContext(), list);
-                                    listView.setAdapter(adapter);
-                                    adapter.notifyDataSetChanged();
-                                } else {
-                                    Toast.makeText(getContext(), "No Food Transactions", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+                filterCategory("Food");
+                bottomSheetDialog.dismiss();
             });
         }
 
         if (fRent != null) {
             fRent.setOnClickListener(v -> {
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("Transactions");
-                ref.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() == null) {
-                            Toast.makeText(getContext(), "No Transactions to Filter", Toast.LENGTH_SHORT).show();
-                        } else {
-                            if (getContext() != null) {
-                                ArrayList<expenseModel> list = new ArrayList<>();
-                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                    expenseModel p = ds.getValue(expenseModel.class);
-                                    if (Objects.requireNonNull(p).getCategory().equals("Rent")) {
-                                        list.add(p);
-                                        bottomSheetDialog.dismiss();
-                                        filterDialog.dismiss();
-                                    }
-                                }
-                                if (list.size() > 0) {
-                                    transactionAdapter adapter = new transactionAdapter(getContext(), list);
-                                    listView.setAdapter(adapter);
-                                    adapter.notifyDataSetChanged();
-                                } else {
-                                    Toast.makeText(getContext(), "No Rent Transactions", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+                filterCategory("Rent");
+                bottomSheetDialog.dismiss();
             });
         }
     }
@@ -602,154 +264,99 @@ public class transactionFragment extends Fragment {
 
         if (fSalary != null) {
             fSalary.setOnClickListener(v -> {
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("Transactions");
-                ref.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() == null) {
-                            Toast.makeText(getContext(), "No Transactions to Filter", Toast.LENGTH_SHORT).show();
-                        } else {
-                            if (getContext() != null) {
-                                ArrayList<expenseModel> list = new ArrayList<>();
-                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                    expenseModel p = ds.getValue(expenseModel.class);
-                                    if (Objects.requireNonNull(p).getCategory().equals("Salary")) {
-                                        list.add(p);
-                                        bottomSheetDialog.dismiss();
-                                        filterDialog.dismiss();
-                                    }
-                                }
-                                if (list.size() > 0) {
-                                    transactionAdapter adapter = new transactionAdapter(getContext(), list);
-                                    listView.setAdapter(adapter);
-                                    adapter.notifyDataSetChanged();
-                                } else {
-                                    Toast.makeText(getContext(), "No Salary Transactions", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+                filterCategory("Salary");
+                bottomSheetDialog.dismiss();
             });
         }
 
         if (fAward != null) {
             fAward.setOnClickListener(v -> {
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("Transactions");
-                ref.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() == null) {
-                            Toast.makeText(getContext(), "No Transactions to Filter", Toast.LENGTH_SHORT).show();
-                        } else {
-                            if (getContext() != null) {
-                                ArrayList<expenseModel> list = new ArrayList<>();
-                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                    expenseModel p = ds.getValue(expenseModel.class);
-                                    if (Objects.requireNonNull(p).getCategory().equals("Award")) {
-                                        list.add(p);
-                                        bottomSheetDialog.dismiss();
-                                        filterDialog.dismiss();
-                                    }
-                                }
-                                if (list.size() > 0) {
-                                    transactionAdapter adapter = new transactionAdapter(getContext(), list);
-                                    listView.setAdapter(adapter);
-                                    adapter.notifyDataSetChanged();
-                                } else {
-                                    Toast.makeText(getContext(), "No Award Transactions", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+                filterCategory("Award");
+                bottomSheetDialog.dismiss();
             });
         }
 
         if (fStocks != null) {
             fStocks.setOnClickListener(v -> {
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("Transactions");
-                ref.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() == null) {
-                            Toast.makeText(getContext(), "No Transactions to Filter", Toast.LENGTH_SHORT).show();
-                        } else {
-                            if (getContext() != null) {
-                                ArrayList<expenseModel> list = new ArrayList<>();
-                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                    expenseModel p = ds.getValue(expenseModel.class);
-                                    if (Objects.requireNonNull(p).getCategory().equals("Stocks")) {
-                                        list.add(p);
-                                        bottomSheetDialog.dismiss();
-                                        filterDialog.dismiss();
-                                    }
-                                }
-                                if (list.size() > 0) {
-                                    transactionAdapter adapter = new transactionAdapter(getContext(), list);
-                                    listView.setAdapter(adapter);
-                                    adapter.notifyDataSetChanged();
-                                } else {
-                                    Toast.makeText(getContext(), "No Stocks Transactions", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+                filterCategory("Stocks");
             });
         }
 
         if (fOthers != null) {
             fOthers.setOnClickListener(v -> {
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("Transactions");
-                ref.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() == null) {
-                            Toast.makeText(getContext(), "No Transactions to Filter", Toast.LENGTH_SHORT).show();
-                        } else {
-                            if (getContext() != null) {
-                                ArrayList<expenseModel> list = new ArrayList<>();
-                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                    expenseModel p = ds.getValue(expenseModel.class);
-                                    if (Objects.requireNonNull(p).getCategory().equals("Others")) {
-                                        list.add(p);
-                                        bottomSheetDialog.dismiss();
-                                        filterDialog.dismiss();
-                                    }
-                                }
-                                if (list.size() > 0) {
-                                    transactionAdapter adapter = new transactionAdapter(getContext(), list);
-                                    listView.setAdapter(adapter);
-                                    adapter.notifyDataSetChanged();
-                                } else {
-                                    Toast.makeText(getContext(), "No Transactions to filter", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+                filterCategory("Others");
+                bottomSheetDialog.dismiss();
             });
         }
+    }
+
+    public void filterType(String type) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("Transactions");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    Toast.makeText(getContext(), "No Transactions to Filter", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (getContext() != null) {
+                        ArrayList<expenseModel> list = new ArrayList<>();
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            expenseModel p = ds.getValue(expenseModel.class);
+                            if (Objects.requireNonNull(p).getType().equals(type)) {
+                                list.add(p);
+                                filterDialog.dismiss();
+                            }
+                        }
+                        if (list.size() > 0) {
+                            transactionAdapter adapter = new transactionAdapter(getContext(), list);
+                            listView.setAdapter(adapter);
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(getContext(), "No Transactions to Filter", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void filterCategory(String category) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("Transactions");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    Toast.makeText(getContext(), "No Transactions to Filter", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (getContext() != null) {
+                        ArrayList<expenseModel> list = new ArrayList<>();
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            expenseModel p = ds.getValue(expenseModel.class);
+                            if (Objects.requireNonNull(p).getCategory().equals(category)) {
+                                list.add(p);
+                                filterDialog.dismiss();
+                            }
+                        }
+                        if (list.size() > 0) {
+                            transactionAdapter adapter = new transactionAdapter(getContext(), list);
+                            listView.setAdapter(adapter);
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(getContext(), "No " + category + " Transactions to filter", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

@@ -44,8 +44,9 @@ public class homeFragment extends Fragment {
     public ConstraintLayout homeLayout;
     public ImageView budgetNullAvatar, walletNullAvatar, budgetExdAvatar;
     public Button expenseBtn, incomeBtn, categoryBtnExpense, categoryBtnIncome;
+    public TextView tv1Pt, tv2Pt, tv3Pt, tv4Pt, tv5Pt, tv6Pt, tv7Pt, tv8Pt, tv9Pt, tv10Pt, tv11Pt, tv12Pt, tv13Pt;
     ListView listView;
-    TextView homeBudget, walletBalance;
+    TextView homeBudget, walletBalance, recTrans;
     FirebaseDatabase database, database2, database3, database4;
     DatabaseReference homeRef, homeRef2, homeRef3, homeRef4;
     private ProgressDialog progressDialog;
@@ -68,10 +69,190 @@ public class homeFragment extends Fragment {
 
         expenseBtn = view.findViewById(R.id.expenseBtn);
         incomeBtn = view.findViewById(R.id.incomeBtn);
+        recTrans = view.findViewById(R.id.recent_transactions);
         homeLayout = view.findViewById(R.id.noTransLayout);
         homeBudget = view.findViewById(R.id.homeBudget);
         walletBalance = view.findViewById(R.id.walletBalance);
         listView = view.findViewById(R.id.list);
+
+        tv1Pt = view.findViewById(R.id.entertainment_total);
+        tv2Pt = view.findViewById(R.id.subscription_total);
+        tv3Pt = view.findViewById(R.id.healthcare_total);
+        tv4Pt = view.findViewById(R.id.investment_total);
+        tv5Pt = view.findViewById(R.id.utilities_total);
+        tv6Pt = view.findViewById(R.id.transport_total);
+        tv7Pt = view.findViewById(R.id.shopping_total);
+        tv8Pt = view.findViewById(R.id.food_total);
+        tv9Pt = view.findViewById(R.id.rent_total);
+        tv10Pt = view.findViewById(R.id.salary_total);
+        tv11Pt = view.findViewById(R.id.award_total);
+        tv12Pt = view.findViewById(R.id.stocks_total);
+        tv13Pt = view.findViewById(R.id.others_total);
+
+        database = FirebaseDatabase.getInstance();
+        homeRef = database.getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("Transactions");
+        homeRef.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (getContext() != null) {
+                    int entertainment = 0, subscription = 0, healthcare = 0, investment = 0, utilities = 0, transport = 0, shopping = 0, food = 0, rent = 0;
+                    int salary = 0, award = 0, stocks = 0, others = 0;
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        expenseModel model = ds.getValue(expenseModel.class);
+                        switch (Objects.requireNonNull(model).getCategory()) {
+                            case "Entertainment":
+                                entertainment += model.getAmount();
+                                break;
+                            case "Subscription":
+                                subscription += model.getAmount();
+                                break;
+                            case "Health Care":
+                                healthcare += model.getAmount();
+                                break;
+                            case "Investment":
+                                investment += model.getAmount();
+                                break;
+                            case "Utilities":
+                                utilities += model.getAmount();
+                                break;
+                            case "Transport":
+                                transport += model.getAmount();
+                                break;
+                            case "Shopping":
+                                shopping += model.getAmount();
+                                break;
+                            case "Food":
+                                food += model.getAmount();
+                                break;
+                            case "Rent":
+                                rent += model.getAmount();
+                                break;
+                            case "Salary":
+                                salary += model.getAmount();
+                                break;
+                            case "Award":
+                                award += model.getAmount();
+                                break;
+                            case "Stocks":
+                                stocks += model.getAmount();
+                                break;
+                            case "Others":
+                                others += model.getAmount();
+                                break;
+                        }
+                        if (entertainment == 0) {
+                            tv1Pt.setVisibility(View.GONE);
+                        } else {
+                            tv1Pt.setVisibility(View.VISIBLE);
+                            tv1Pt.setText("-" + entertainment + currencyAdapter.setUserCurrency());
+                            tv1Pt.setTextColor(getResources().getColor(R.color.primary_dark));
+                        }
+
+                        if (subscription == 0) {
+                            tv2Pt.setVisibility(View.GONE);
+                        } else {
+                            tv2Pt.setVisibility(View.VISIBLE);
+                            tv2Pt.setText("-" + subscription + currencyAdapter.setUserCurrency());
+                            tv2Pt.setTextColor(getResources().getColor(R.color.primary_dark));
+                        }
+
+                        if (healthcare == 0) {
+                            tv3Pt.setVisibility(View.GONE);
+                        } else {
+                            tv3Pt.setVisibility(View.VISIBLE);
+                            tv3Pt.setText("-" + healthcare + currencyAdapter.setUserCurrency());
+                            tv3Pt.setTextColor(getResources().getColor(R.color.primary_dark));
+                        }
+
+                        if (investment == 0) {
+                            tv4Pt.setVisibility(View.GONE);
+                        } else {
+                            tv4Pt.setVisibility(View.VISIBLE);
+                            tv4Pt.setText("-" + investment + currencyAdapter.setUserCurrency());
+                            tv4Pt.setTextColor(getResources().getColor(R.color.primary_dark));
+                        }
+
+                        if (utilities == 0) {
+                            tv5Pt.setVisibility(View.GONE);
+                        } else {
+                            tv5Pt.setVisibility(View.VISIBLE);
+                            tv5Pt.setText("-" + utilities + currencyAdapter.setUserCurrency());
+                            tv5Pt.setTextColor(getResources().getColor(R.color.primary_dark));
+                        }
+
+                        if (transport == 0) {
+                            tv6Pt.setVisibility(View.GONE);
+                        } else {
+                            tv6Pt.setVisibility(View.VISIBLE);
+                            tv6Pt.setText("-" + transport + currencyAdapter.setUserCurrency());
+                            tv6Pt.setTextColor(getResources().getColor(R.color.primary_dark));
+                        }
+
+                        if (shopping == 0) {
+                            tv7Pt.setVisibility(View.GONE);
+                        } else {
+                            tv7Pt.setVisibility(View.VISIBLE);
+                            tv7Pt.setText("-" + shopping + currencyAdapter.setUserCurrency());
+                            tv7Pt.setTextColor(getResources().getColor(R.color.primary_dark));
+                        }
+
+                        if (food == 0) {
+                            tv8Pt.setVisibility(View.GONE);
+                        } else {
+                            tv8Pt.setVisibility(View.VISIBLE);
+                            tv8Pt.setText("-" + food + currencyAdapter.setUserCurrency());
+                            tv8Pt.setTextColor(getResources().getColor(R.color.primary_dark));
+                        }
+
+                        if (rent == 0) {
+                            tv9Pt.setVisibility(View.GONE);
+                        } else {
+                            tv9Pt.setVisibility(View.VISIBLE);
+                            tv9Pt.setText("-" + rent + currencyAdapter.setUserCurrency());
+                            tv9Pt.setTextColor(getResources().getColor(R.color.primary_dark));
+                        }
+
+                        if (salary == 0) {
+                            tv10Pt.setVisibility(View.GONE);
+                        } else {
+                            tv10Pt.setVisibility(View.VISIBLE);
+                            tv10Pt.setText("+" + salary + currencyAdapter.setUserCurrency());
+                            tv10Pt.setTextColor(getResources().getColor(R.color.primary_dark));
+                        }
+
+                        if (award == 0) {
+                            tv11Pt.setVisibility(View.GONE);
+                        } else {
+                            tv11Pt.setVisibility(View.VISIBLE);
+                            tv11Pt.setText("+" + award + currencyAdapter.setUserCurrency());
+                            tv11Pt.setTextColor(getResources().getColor(R.color.primary_dark));
+                        }
+
+                        if (stocks == 0) {
+                            tv12Pt.setVisibility(View.GONE);
+                        } else {
+                            tv12Pt.setVisibility(View.VISIBLE);
+                            tv12Pt.setText("+" + stocks + currencyAdapter.setUserCurrency());
+                            tv12Pt.setTextColor(getResources().getColor(R.color.primary_dark));
+                        }
+
+                        if (others == 0) {
+                            tv13Pt.setVisibility(View.GONE);
+                        } else {
+                            tv13Pt.setVisibility(View.VISIBLE);
+                            tv13Pt.setText("+" + others + currencyAdapter.setUserCurrency());
+                            tv13Pt.setTextColor(getResources().getColor(R.color.primary_dark));
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         expenseBtn.setOnClickListener(v -> homeRef3.addValueEventListener(new ValueEventListener() {
             @Override
@@ -498,12 +679,16 @@ public class homeFragment extends Fragment {
                     expenseModel p = d.getValue(expenseModel.class);
                     if (p == null) {
                         if (getActivity() != null) {
-                            getActivity().runOnUiThread(() -> homeLayout.setVisibility(View.VISIBLE));
+                            getActivity().runOnUiThread(() -> {
+                                homeLayout.setVisibility(View.VISIBLE);
+                                recTrans.setText("");
+                            });
                         }
                     } else {
                         if (getActivity() != null) {
                             getActivity().runOnUiThread(() -> {
                                 homeLayout.setVisibility(View.GONE);
+                                recTrans.setText("Recent Transactions");
                                 transList.add(p);
                             });
                         }
@@ -559,6 +744,7 @@ public class homeFragment extends Fragment {
                 } else {
                     homeBudget.setText("Budget: " + budget + currencyAdapter.setUserCurrency());
                     homeRef.addValueEventListener(new ValueEventListener() {
+                        @SuppressWarnings("unchecked")
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             totalExpense = 0;
@@ -581,13 +767,17 @@ public class homeFragment extends Fragment {
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                         String budget = snapshot.getValue(String.class);
                                         if (getContext() != null) {
-                                            if (Integer.parseInt(Objects.requireNonNull(budget)) < totalExpense) {
+                                            if (budget == null) {
+                                                budget = "0";
+                                            } else if (Integer.parseInt(Objects.requireNonNull(budget)) < totalExpense) {
                                                 homeBudget.setText("Budget Exceeded!");
                                                 homeBudget.setTextColor(requireContext().getResources().getColor(R.color.red));
                                             } else if (Integer.parseInt(budget) * 0.8 <= totalExpense && Integer.parseInt(budget) * 0.9 >= totalExpense) {
                                                 homeBudget.setTextColor(requireContext().getResources().getColor(R.color.warning));
+                                                Toast.makeText(requireContext(), "80% Budget Limit Reached!", Toast.LENGTH_SHORT).show();
                                             } else if (Integer.parseInt(budget) * 0.5 <= totalExpense) {
                                                 homeBudget.setTextColor(requireContext().getResources().getColor(R.color.warning));
+                                                Toast.makeText(requireContext(), "50% Budget Limit Reached!", Toast.LENGTH_SHORT).show();
                                             } else {
                                                 homeBudget.setTextColor(requireContext().getResources().getColor(R.color.green));
                                             }
@@ -623,36 +813,9 @@ public class homeFragment extends Fragment {
         bottomSheetDialog.setCancelable(true);
         bottomSheetDialog.setCanceledOnTouchOutside(true);
         bottomSheetDialog.show();
+        walletNullAvatar = bottomSheetDialog.findViewById(R.id.walletNullAvatar);
+        setImageResource(walletNullAvatar, R.drawable.image23, R.drawable.image24, R.drawable.image25, R.drawable.image26, R.drawable.image27, R.drawable.image28);
 
-        walletNullAvatar = (ImageView) bottomSheetDialog.findViewById(R.id.walletNullAvatar);
-
-        database4 = FirebaseDatabase.getInstance();
-        homeRef4 = database4.getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("avatar");
-        homeRef4.addValueEventListener(new ValueEventListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Integer avatar = dataSnapshot.getValue(Integer.class);
-                if (avatar == null) {
-                    walletNullAvatar.setImageResource(R.drawable.image23);
-                } else if (avatar == 1) {
-                    walletNullAvatar.setImageResource(R.drawable.image24);
-                } else if (avatar == 2) {
-                    walletNullAvatar.setImageResource(R.drawable.image25);
-                } else if (avatar == 3) {
-                    walletNullAvatar.setImageResource(R.drawable.image26);
-                } else if (avatar == 4) {
-                    walletNullAvatar.setImageResource(R.drawable.image27);
-                } else if (avatar == 5) {
-                    walletNullAvatar.setImageResource(R.drawable.image28);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
     }
 
     public void showBudgetAlert() {
@@ -661,35 +824,8 @@ public class homeFragment extends Fragment {
         bottomSheetDialog.setCancelable(true);
         bottomSheetDialog.setCanceledOnTouchOutside(true);
         bottomSheetDialog.show();
-
-        budgetNullAvatar = (ImageView) bottomSheetDialog.findViewById(R.id.budgetNullAvatar);
-
-        database4 = FirebaseDatabase.getInstance();
-        homeRef4 = database4.getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("avatar");
-        homeRef4.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Integer avatar = dataSnapshot.getValue(Integer.class);
-                if (avatar == null) {
-                    budgetNullAvatar.setImageResource(R.drawable.image17);
-                } else if (avatar == 1) {
-                    budgetNullAvatar.setImageResource(R.drawable.image18);
-                } else if (avatar == 2) {
-                    budgetNullAvatar.setImageResource(R.drawable.image19);
-                } else if (avatar == 3) {
-                    budgetNullAvatar.setImageResource(R.drawable.image20);
-                } else if (avatar == 4) {
-                    budgetNullAvatar.setImageResource(R.drawable.image21);
-                } else if (avatar == 5) {
-                    budgetNullAvatar.setImageResource(R.drawable.image22);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        budgetNullAvatar = bottomSheetDialog.findViewById(R.id.budgetNullAvatar);
+        setImageResource(budgetNullAvatar, R.drawable.image29, R.drawable.image30, R.drawable.image31, R.drawable.image32, R.drawable.image33, R.drawable.image34);
     }
 
     public void showBudgetExceeded() {
@@ -698,9 +834,11 @@ public class homeFragment extends Fragment {
         bottomSheetDialog.setCancelable(true);
         bottomSheetDialog.setCanceledOnTouchOutside(true);
         bottomSheetDialog.show();
+        budgetExdAvatar = bottomSheetDialog.findViewById(R.id.budgetExdImg);
+        setImageResource(budgetExdAvatar, R.drawable.image11, R.drawable.image12, R.drawable.image13, R.drawable.image14, R.drawable.image15, R.drawable.image16);
+    }
 
-        budgetExdAvatar = (ImageView) bottomSheetDialog.findViewById(R.id.budgetExdImg);
-
+    public void setImageResource(ImageView imageView, int imgRsc1, int imgRsc2, int imgRsc3, int imgRsc4, int imgRsc5, int imgRsc6) {
         database4 = FirebaseDatabase.getInstance();
         homeRef4 = database4.getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("avatar");
         homeRef4.addValueEventListener(new ValueEventListener() {
@@ -709,17 +847,17 @@ public class homeFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Integer avatar = dataSnapshot.getValue(Integer.class);
                 if (avatar == null) {
-                    budgetExdAvatar.setImageResource(R.drawable.image12);
+                    imageView.setImageResource(imgRsc1);
                 } else if (avatar == 1) {
-                    budgetExdAvatar.setImageResource(R.drawable.image15);
+                    imageView.setImageResource(imgRsc2);
                 } else if (avatar == 2) {
-                    budgetExdAvatar.setImageResource(R.drawable.image11);
+                    imageView.setImageResource(imgRsc3);
                 } else if (avatar == 3) {
-                    budgetExdAvatar.setImageResource(R.drawable.image16);
+                    imageView.setImageResource(imgRsc4);
                 } else if (avatar == 4) {
-                    budgetExdAvatar.setImageResource(R.drawable.image13);
+                    imageView.setImageResource(imgRsc5);
                 } else if (avatar == 5) {
-                    budgetNullAvatar.setImageResource(R.drawable.image14);
+                    imageView.setImageResource(imgRsc6);
                 }
             }
 

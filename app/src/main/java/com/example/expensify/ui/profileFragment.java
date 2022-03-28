@@ -18,7 +18,6 @@ import androidx.fragment.app.Fragment;
 
 import com.example.expensify.R;
 import com.example.expensify.adapter.currencyAdapter;
-import com.example.expensify.checkStatus;
 import com.example.expensify.loginActivity;
 import com.example.expensify.userDashboard;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,17 +28,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Map;
 import java.util.Objects;
 
 
 public class profileFragment extends Fragment {
 
-    public TextView profEmail, helloUser;
+    public TextView profEmail, helloUser, totalSpent, totalEarned;
+    public Integer totalExpense, totalIncome;
     public FirebaseDatabase database;
     public DatabaseReference reference;
     FirebaseAuth mAuth;
     ImageView imageView;
-    Button editAcc, viewReport, updateProfileBtn, logOut, createBudget, changeCurrency, changeAvatar;
+    Button editAcc, updateProfileBtn, logOut, createBudget, changeCurrency, changeAvatar;
     EditText edit_profile_username, edit_profile_password;
     private String budgetAmount, walletAmount;
 
@@ -55,9 +56,10 @@ public class profileFragment extends Fragment {
         logOut = view.findViewById(R.id.logout);
         profEmail = view.findViewById(R.id.profile_email);
         helloUser = view.findViewById(R.id.helloUser);
+        totalSpent = view.findViewById(R.id.total_spent);
+        totalEarned = view.findViewById(R.id.total_earned);
         mAuth = FirebaseAuth.getInstance();
         editAcc = view.findViewById(R.id.edit_profile);
-        viewReport = view.findViewById(R.id.viewReport);
         createBudget = view.findViewById(R.id.createBudget);
         changeCurrency = view.findViewById(R.id.changeCurrency);
         changeAvatar = view.findViewById(R.id.change_avatar);
@@ -99,12 +101,57 @@ public class profileFragment extends Fragment {
         FirebaseUser user = mAuth.getCurrentUser();
         profEmail.setText(Objects.requireNonNull(user).getEmail());
 
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())
+                .child("Transactions")
+                .addValueEventListener(new ValueEventListener() {
+                    @SuppressWarnings("unchecked")
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        totalExpense = 0;
+                        totalIncome = 0;
+                        if (getContext() != null) {
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                Map<String, Object> map = (Map<String, Object>) snapshot.getValue();
+                                Object total = null;
+                                if (map != null) {
+                                    total = map.get("amount");
+                                }
+                                Object type = null;
+                                if (map != null) {
+                                    type = map.get("type");
+                                }
+                                if (String.valueOf(type).equals("expense")) {
+                                    int pTotal = Integer.parseInt(String.valueOf(total));
+                                    totalExpense += pTotal;
+                                }
+                                if (String.valueOf(type).equals("income")) {
+                                    int pTotal = Integer.parseInt(String.valueOf(total));
+                                    totalIncome += pTotal;
+                                }
+                            }
+                            if (totalExpense == 0 && totalIncome == 0) {
+                                totalSpent.setVisibility(View.GONE);
+                                totalEarned.setVisibility(View.GONE);
+                            } else {
+                                totalSpent.setVisibility(View.VISIBLE);
+                                totalEarned.setVisibility(View.VISIBLE);
+                                totalSpent.setText("Total Spending's : -" + totalExpense + currencyAdapter.setUserCurrency());
+                                totalSpent.setTextColor(getResources().getColor(R.color.red));
+                                totalEarned.setText("Total Earnings's : +" + totalIncome + currencyAdapter.setUserCurrency());
+                                totalEarned.setTextColor(getResources().getColor(R.color.green));
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
         editAcc.setOnClickListener(v -> alertUpdate());
         logOut.setOnClickListener(v -> alertLogOut());
-        viewReport.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), checkStatus.class);
-            startActivity(intent);
-        });
         createBudget.setOnClickListener(v -> alertCreateBudget());
         changeCurrency.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), currencyAdapter.class);
@@ -125,8 +172,8 @@ public class profileFragment extends Fragment {
         Button addBudget = view2.findViewById(R.id.addBudget);
 
         addBudget.setOnClickListener(v -> {
-            budgetAmount = budget.getText().toString();
-            walletAmount = wallet.getText().toString();
+            budgetAmount = budget.getText().toString().trim();
+            walletAmount = wallet.getText().toString().trim();
             if (budgetAmount.isEmpty()) {
                 budget.setError("Please enter a budget amount");
             } else if (budgetAmount.contains(".")) {
@@ -143,6 +190,8 @@ public class profileFragment extends Fragment {
                 budget.setError("Please enter a valid amount");
             } else if (!walletAmount.matches("[0-9]+")) {
                 wallet.setError("Please enter a valid amount");
+            } else if (Integer.parseInt(budgetAmount) > Integer.parseInt(walletAmount)) {
+                Toast.makeText(getContext(), "Budget amount can't be greater than Wallet amount! ", Toast.LENGTH_SHORT).show();
             } else {
                 Intent intent = new Intent(requireActivity(), userDashboard.class);
                 startActivity(intent);
@@ -206,22 +255,25 @@ public class profileFragment extends Fragment {
     }
 
     public void getName() {
-        FirebaseDatabase.getInstance().getReference().child("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("fullName").addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot dataSnapshot) {
-                String name = dataSnapshot.getValue(String.class);
-                if (name == null) {
-                    name = "";
-                }
-                String[] parts = Objects.requireNonNull(name).split(" ");
-                String firstName = parts[0];
-                helloUser.setText(String.format("Hello %s!", firstName));
-            }
+        FirebaseDatabase.getInstance().getReference().child("Users")
+                .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())
+                .child("fullName")
+                .addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot dataSnapshot) {
+                        String name = dataSnapshot.getValue(String.class);
+                        if (name == null) {
+                            name = "";
+                        }
+                        String[] parts = Objects.requireNonNull(name).split(" ");
+                        String firstName = parts[0];
+                        helloUser.setText("Hello " + firstName + " 👋");
+                    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                    }
+                });
     }
 }

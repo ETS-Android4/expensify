@@ -91,7 +91,7 @@ public class loginActivity extends AppCompatActivity {
                             String name = dataSnapshot.getValue(String.class);
                             String[] parts = Objects.requireNonNull(name).split(" ");
                             String firstName = parts[0];
-                            Toast.makeText(getApplicationContext(), "Welcome " + firstName + "!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Welcome " + firstName + " 😊!", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
