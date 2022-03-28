@@ -45,13 +45,13 @@ public class homeFragment extends Fragment {
     public ImageView budgetNullAvatar, walletNullAvatar, budgetExdAvatar;
     public Button expenseBtn, incomeBtn, categoryBtnExpense, categoryBtnIncome;
     public TextView tv1Pt, tv2Pt, tv3Pt, tv4Pt, tv5Pt, tv6Pt, tv7Pt, tv8Pt, tv9Pt, tv10Pt, tv11Pt, tv12Pt, tv13Pt;
+    public ProgressDialog progressDialog;
+    public String mAmount, mNotes, category;
+    public Integer totalExpense;
     ListView listView;
     TextView homeBudget, walletBalance, recTrans;
     FirebaseDatabase database, database2, database3, database4;
     DatabaseReference homeRef, homeRef2, homeRef3, homeRef4;
-    private ProgressDialog progressDialog;
-    private String mAmount, mNotes, category;
-    private Integer totalExpense;
 
     @Override
     public void onStart() {
@@ -295,7 +295,7 @@ public class homeFragment extends Fragment {
         return view;
     }
 
-    private void addIncome() {
+    public void addIncome() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("Transactions");
         AlertDialog.Builder myDialog = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -383,7 +383,7 @@ public class homeFragment extends Fragment {
         dialog.show();
     }
 
-    private void addExpense() {
+    public void addExpense() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("Transactions");
         AlertDialog.Builder myDialog = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -519,7 +519,7 @@ public class homeFragment extends Fragment {
     }
 
     @SuppressLint("SetTextI18n")
-    private void showBottomSheetForExpense() {
+    public void showBottomSheetForExpense() {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_expense_dialog);
         bottomSheetDialog.setCancelable(true);
@@ -594,7 +594,7 @@ public class homeFragment extends Fragment {
     }
 
     @SuppressLint("SetTextI18n")
-    private void showBottomSheetForIncome() {
+    public void showBottomSheetForIncome() {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_income_dialog);
 
@@ -631,7 +631,7 @@ public class homeFragment extends Fragment {
         }
     }
 
-    private void checkBudget() {
+    public void checkBudget() {
         homeRef3.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -650,7 +650,7 @@ public class homeFragment extends Fragment {
         });
     }
 
-    private void checkWallet() {
+    public void checkWallet() {
         homeRef2.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -763,34 +763,34 @@ public class homeFragment extends Fragment {
                                     int pTotal = Integer.parseInt(String.valueOf(total));
                                     totalExpense += pTotal;
                                 }
-                                homeRef3.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        String budget = snapshot.getValue(String.class);
-                                        if (getContext() != null) {
-                                            if (budget == null) {
-                                                budget = "0";
-                                            } else if (Integer.parseInt(Objects.requireNonNull(budget)) < totalExpense) {
-                                                homeBudget.setText("Budget Exceeded!");
-                                                homeBudget.setTextColor(requireContext().getResources().getColor(R.color.red));
-                                            } else if (Integer.parseInt(budget) * 0.8 <= totalExpense && Integer.parseInt(budget) * 0.9 >= totalExpense) {
-                                                homeBudget.setTextColor(requireContext().getResources().getColor(R.color.warning));
-                                                Toast.makeText(requireContext(), "80% Budget Limit Reached!", Toast.LENGTH_SHORT).show();
-                                            } else if (Integer.parseInt(budget) * 0.5 <= totalExpense) {
-                                                homeBudget.setTextColor(requireContext().getResources().getColor(R.color.warning));
-                                                Toast.makeText(requireContext(), "50% Budget Limit Reached!", Toast.LENGTH_SHORT).show();
-                                            } else {
-                                                homeBudget.setTextColor(requireContext().getResources().getColor(R.color.green));
-                                            }
+                            }
+                            homeRef3.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    String budget = snapshot.getValue(String.class);
+                                    if (getContext() != null) {
+                                        if (budget == null) {
+                                            budget = "0";
+                                        } else if (Integer.parseInt(Objects.requireNonNull(budget)) < totalExpense) {
+                                            homeBudget.setText("Budget Exceeded!");
+                                            homeBudget.setTextColor(requireContext().getResources().getColor(R.color.red));
+                                        } else if (Integer.parseInt(budget) * 0.8 <= totalExpense && Integer.parseInt(budget) * 0.9 >= totalExpense) {
+                                            homeBudget.setTextColor(requireContext().getResources().getColor(R.color.warning));
+                                            Toast.makeText(requireContext(), "80% Budget Limit Reached!", Toast.LENGTH_SHORT).show();
+                                        } else if (Integer.parseInt(budget) * 0.5 <= totalExpense) {
+                                            homeBudget.setTextColor(requireContext().getResources().getColor(R.color.warning));
+                                            Toast.makeText(requireContext(), "50% Budget Limit Reached!", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            homeBudget.setTextColor(requireContext().getResources().getColor(R.color.green));
                                         }
                                     }
+                                }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
 
-                                    }
-                                });
-                            }
+                                }
+                            });
                         }
 
                         @Override
