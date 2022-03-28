@@ -806,8 +806,6 @@ public class homeFragment extends Fragment {
                                                 homeBudget.setTextColor(requireContext().getResources().getColor(R.color.warning));
                                             } else if (Integer.parseInt(budget) * 0.5 <= totalExpense) {
                                                 homeBudget.setTextColor(requireContext().getResources().getColor(R.color.warning));
-                                            } else {
-                                                homeBudget.setTextColor(requireContext().getResources().getColor(R.color.green));
                                             }
                                         }
                                     }
