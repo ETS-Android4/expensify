@@ -673,6 +673,7 @@ public class homeFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         homeRef = database.getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("Transactions");
         homeRef.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot d : snapshot.getChildren()) {
@@ -835,7 +836,7 @@ public class homeFragment extends Fragment {
         bottomSheetDialog.setCanceledOnTouchOutside(true);
         bottomSheetDialog.show();
         budgetExdAvatar = bottomSheetDialog.findViewById(R.id.budgetExdImg);
-        setImageResource(budgetExdAvatar, R.drawable.image11, R.drawable.image12, R.drawable.image13, R.drawable.image14, R.drawable.image15, R.drawable.image16);
+        setImageResource(budgetExdAvatar, R.drawable.image12, R.drawable.image15, R.drawable.image11, R.drawable.image16, R.drawable.image13, R.drawable.image14);
     }
 
     public void setImageResource(ImageView imageView, int imgRsc1, int imgRsc2, int imgRsc3, int imgRsc4, int imgRsc5, int imgRsc6) {

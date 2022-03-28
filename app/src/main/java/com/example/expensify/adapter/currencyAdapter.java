@@ -98,7 +98,11 @@ public class currencyAdapter extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 currency = dataSnapshot.getValue(String.class);
-                currentCurrency.setText("Your current Selection: " + currency);
+                if (currency == null) {
+                    currentCurrency.setText("Your current Selection: $");
+                } else {
+                    currentCurrency.setText("Your current Selection: " + currency);
+                }
             }
 
             @Override
