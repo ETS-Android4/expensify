@@ -3,6 +3,7 @@ package com.example.expensify.ui;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -200,7 +201,7 @@ public class profileFragment extends Fragment {
                 myRef.child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid()).child("UserBank").child("Wallet").setValue(walletAmount);
                 myRef.child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid()).child("UserBank").child("Budget").setValue(budgetAmount);
                 dialog.dismiss();
-                Toast.makeText(getContext(), "Budget Added", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Budget and Wallet Added!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -217,22 +218,27 @@ public class profileFragment extends Fragment {
         updateProfileBtn = view1.findViewById(R.id.edit_profile_button);
 
         updateProfileBtn.setOnClickListener(v -> {
-            if (edit_profile_username.getText().toString().isEmpty() || edit_profile_password.getText().toString().isEmpty()) {
-                Toast.makeText(getContext(), "Enter the required fields", Toast.LENGTH_SHORT).show();
-            } else if (edit_profile_password.getText().toString().length() < 6) {
-                Toast.makeText(getContext(), "Password must be at least 6 characters long", Toast.LENGTH_SHORT).show();
-            } else if (edit_profile_username.getText().toString().equals(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail())) {
-                Toast.makeText(getContext(), "Username can not be same as before", Toast.LENGTH_SHORT).show();
-            } else {
-                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
-                databaseReference.child(mAuth.getCurrentUser().getUid()).child("username").setValue(edit_profile_username.getText().toString());
-                databaseReference.child(mAuth.getCurrentUser().getUid()).child("password").setValue(edit_profile_password.getText().toString());
-                profEmail.setText(edit_profile_username.getText().toString());
-
-                mAuth.getCurrentUser().updateEmail(edit_profile_username.getText().toString());
-                mAuth.getCurrentUser().updatePassword(edit_profile_password.getText().toString());
-                dialog.dismiss();
-                Toast.makeText(getContext(), "Profile Updated!", Toast.LENGTH_SHORT).show();
+            if (getContext() != null) {
+                if (edit_profile_username.getText().toString().isEmpty() || edit_profile_password.getText().toString().isEmpty()) {
+                    Toast.makeText(getContext(), "Enter the required fields", Toast.LENGTH_SHORT).show();
+                } else if (edit_profile_password.getText().toString().length() < 6) {
+                    Toast.makeText(getContext(), "Password must be at least 6 characters long", Toast.LENGTH_SHORT).show();
+                } else if (!Patterns.EMAIL_ADDRESS.matcher(edit_profile_username.getText().toString()).matches()) {
+                    edit_profile_username.setError("Invalid Email");
+                } else if (edit_profile_username.getText().toString().equals(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail())) {
+                    Toast.makeText(getContext(), "Username can not be same as before", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (getContext() != null) {
+                        mAuth.getCurrentUser().updateEmail(edit_profile_username.getText().toString().trim());
+                        mAuth.getCurrentUser().updatePassword(edit_profile_password.getText().toString().trim());
+                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
+                        databaseReference.child(mAuth.getCurrentUser().getUid()).child("email").setValue(edit_profile_username.getText().toString());
+                        databaseReference.child(mAuth.getCurrentUser().getUid()).child("password").setValue(edit_profile_password.getText().toString());
+                        profEmail.setText(edit_profile_username.getText().toString());
+                        dialog.dismiss();
+                        Toast.makeText(getContext(), "Profile Updated!", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
     }
