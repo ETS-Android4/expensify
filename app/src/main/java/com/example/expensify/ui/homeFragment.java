@@ -48,6 +48,7 @@ public class homeFragment extends Fragment {
     public ProgressDialog progressDialog;
     public String mAmount, mNotes, category;
     public Integer totalExpense;
+    public LinearLayout ll1, ll2, ll3, ll4, ll5, ll6, ll7, ll8, ll9, ll10, ll11, ll12, ll13;
     ListView listView;
     TextView homeBudget, walletBalance, recTrans;
     FirebaseDatabase database, database2, database3, database4;
@@ -74,6 +75,20 @@ public class homeFragment extends Fragment {
         homeBudget = view.findViewById(R.id.homeBudget);
         walletBalance = view.findViewById(R.id.walletBalance);
         listView = view.findViewById(R.id.list);
+
+        ll1 = view.findViewById(R.id.ll1);
+        ll2 = view.findViewById(R.id.ll2);
+        ll3 = view.findViewById(R.id.ll3);
+        ll4 = view.findViewById(R.id.ll4);
+        ll5 = view.findViewById(R.id.ll5);
+        ll6 = view.findViewById(R.id.ll6);
+        ll7 = view.findViewById(R.id.ll7);
+        ll8 = view.findViewById(R.id.ll8);
+        ll9 = view.findViewById(R.id.ll9);
+        ll10 = view.findViewById(R.id.ll10);
+        ll11 = view.findViewById(R.id.ll11);
+        ll12 = view.findViewById(R.id.ll12);
+        ll13 = view.findViewById(R.id.ll13);
 
         tv1Pt = view.findViewById(R.id.entertainment_total);
         tv2Pt = view.findViewById(R.id.subscription_total);
@@ -142,105 +157,105 @@ public class homeFragment extends Fragment {
                                 break;
                         }
                         if (entertainment == 0) {
-                            tv1Pt.setVisibility(View.GONE);
+                            ll1.setVisibility(View.GONE);
                         } else {
-                            tv1Pt.setVisibility(View.VISIBLE);
+                            ll1.setVisibility(View.VISIBLE);
                             tv1Pt.setText("-" + entertainment + currencyAdapter.setUserCurrency());
                             tv1Pt.setTextColor(getResources().getColor(R.color.primary_dark));
                         }
 
                         if (subscription == 0) {
-                            tv2Pt.setVisibility(View.GONE);
+                            ll2.setVisibility(View.GONE);
                         } else {
-                            tv2Pt.setVisibility(View.VISIBLE);
+                            ll2.setVisibility(View.VISIBLE);
                             tv2Pt.setText("-" + subscription + currencyAdapter.setUserCurrency());
                             tv2Pt.setTextColor(getResources().getColor(R.color.primary_dark));
                         }
 
                         if (healthcare == 0) {
-                            tv3Pt.setVisibility(View.GONE);
+                            ll3.setVisibility(View.GONE);
                         } else {
-                            tv3Pt.setVisibility(View.VISIBLE);
+                            ll3.setVisibility(View.VISIBLE);
                             tv3Pt.setText("-" + healthcare + currencyAdapter.setUserCurrency());
                             tv3Pt.setTextColor(getResources().getColor(R.color.primary_dark));
                         }
 
                         if (investment == 0) {
-                            tv4Pt.setVisibility(View.GONE);
+                            ll4.setVisibility(View.GONE);
                         } else {
-                            tv4Pt.setVisibility(View.VISIBLE);
+                            ll4.setVisibility(View.VISIBLE);
                             tv4Pt.setText("-" + investment + currencyAdapter.setUserCurrency());
                             tv4Pt.setTextColor(getResources().getColor(R.color.primary_dark));
                         }
 
                         if (utilities == 0) {
-                            tv5Pt.setVisibility(View.GONE);
+                            ll5.setVisibility(View.GONE);
                         } else {
-                            tv5Pt.setVisibility(View.VISIBLE);
+                            ll5.setVisibility(View.VISIBLE);
                             tv5Pt.setText("-" + utilities + currencyAdapter.setUserCurrency());
                             tv5Pt.setTextColor(getResources().getColor(R.color.primary_dark));
                         }
 
                         if (transport == 0) {
-                            tv6Pt.setVisibility(View.GONE);
+                            ll6.setVisibility(View.GONE);
                         } else {
-                            tv6Pt.setVisibility(View.VISIBLE);
+                            ll6.setVisibility(View.VISIBLE);
                             tv6Pt.setText("-" + transport + currencyAdapter.setUserCurrency());
                             tv6Pt.setTextColor(getResources().getColor(R.color.primary_dark));
                         }
 
                         if (shopping == 0) {
-                            tv7Pt.setVisibility(View.GONE);
+                            ll7.setVisibility(View.GONE);
                         } else {
-                            tv7Pt.setVisibility(View.VISIBLE);
+                            ll7.setVisibility(View.VISIBLE);
                             tv7Pt.setText("-" + shopping + currencyAdapter.setUserCurrency());
                             tv7Pt.setTextColor(getResources().getColor(R.color.primary_dark));
                         }
 
                         if (food == 0) {
-                            tv8Pt.setVisibility(View.GONE);
+                            ll8.setVisibility(View.GONE);
                         } else {
-                            tv8Pt.setVisibility(View.VISIBLE);
+                            ll8.setVisibility(View.VISIBLE);
                             tv8Pt.setText("-" + food + currencyAdapter.setUserCurrency());
                             tv8Pt.setTextColor(getResources().getColor(R.color.primary_dark));
                         }
 
                         if (rent == 0) {
-                            tv9Pt.setVisibility(View.GONE);
+                            ll9.setVisibility(View.GONE);
                         } else {
-                            tv9Pt.setVisibility(View.VISIBLE);
+                            ll9.setVisibility(View.VISIBLE);
                             tv9Pt.setText("-" + rent + currencyAdapter.setUserCurrency());
                             tv9Pt.setTextColor(getResources().getColor(R.color.primary_dark));
                         }
 
                         if (salary == 0) {
-                            tv10Pt.setVisibility(View.GONE);
+                            ll10.setVisibility(View.GONE);
                         } else {
-                            tv10Pt.setVisibility(View.VISIBLE);
+                            ll10.setVisibility(View.VISIBLE);
                             tv10Pt.setText("+" + salary + currencyAdapter.setUserCurrency());
                             tv10Pt.setTextColor(getResources().getColor(R.color.primary_dark));
                         }
 
                         if (award == 0) {
-                            tv11Pt.setVisibility(View.GONE);
+                            ll11.setVisibility(View.GONE);
                         } else {
-                            tv11Pt.setVisibility(View.VISIBLE);
+                            ll11.setVisibility(View.VISIBLE);
                             tv11Pt.setText("+" + award + currencyAdapter.setUserCurrency());
                             tv11Pt.setTextColor(getResources().getColor(R.color.primary_dark));
                         }
 
                         if (stocks == 0) {
-                            tv12Pt.setVisibility(View.GONE);
+                            ll12.setVisibility(View.GONE);
                         } else {
-                            tv12Pt.setVisibility(View.VISIBLE);
+                            ll12.setVisibility(View.VISIBLE);
                             tv12Pt.setText("+" + stocks + currencyAdapter.setUserCurrency());
                             tv12Pt.setTextColor(getResources().getColor(R.color.primary_dark));
                         }
 
                         if (others == 0) {
-                            tv13Pt.setVisibility(View.GONE);
+                            ll13.setVisibility(View.GONE);
                         } else {
-                            tv13Pt.setVisibility(View.VISIBLE);
+                            ll13.setVisibility(View.VISIBLE);
                             tv13Pt.setText("+" + others + currencyAdapter.setUserCurrency());
                             tv13Pt.setTextColor(getResources().getColor(R.color.primary_dark));
                         }
@@ -806,6 +821,8 @@ public class homeFragment extends Fragment {
                                                 homeBudget.setTextColor(requireContext().getResources().getColor(R.color.warning));
                                             } else if (Integer.parseInt(budget) * 0.5 <= totalExpense) {
                                                 homeBudget.setTextColor(requireContext().getResources().getColor(R.color.warning));
+                                            } else {
+                                                homeBudget.setTextColor(requireContext().getResources().getColor(R.color.green));
                                             }
                                         }
                                     }
