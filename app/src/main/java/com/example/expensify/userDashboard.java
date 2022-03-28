@@ -18,6 +18,10 @@ public class userDashboard extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
 
+    @Override
+    public void onBackPressed() {
+    }
+
     @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {

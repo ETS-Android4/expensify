@@ -25,6 +25,9 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     SharedPreferences sharedPreferences;
 
+    @Override
+    public void onBackPressed() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

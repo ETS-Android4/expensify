@@ -2,7 +2,10 @@ package com.example.expensify;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -88,6 +91,8 @@ public class registerActivity extends AppCompatActivity {
                     reference.child(uid).setValue(userModel);
                     Toast.makeText(getApplicationContext(), "Registration Successful", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(getApplicationContext(), loginActivity.class));
+                } else if (!isConnectedToInternet()) {
+                    Toast.makeText(getApplicationContext(), "Unable to Register at the moment, check your Internet connection and try again", Toast.LENGTH_LONG).show();
                 } else if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                     Toast.makeText(getApplicationContext(), "User already exists", Toast.LENGTH_SHORT).show();
                 } else {
@@ -96,5 +101,13 @@ public class registerActivity extends AppCompatActivity {
                 progressDialog.dismiss();
             });
         }
+    }
+
+    public boolean isConnectedToInternet() {
+        ConnectivityManager cm =
+                (ConnectivityManager) registerActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
     }
 }

@@ -1,8 +1,11 @@
 package com.example.expensify;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -36,8 +39,7 @@ public class loginActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+
     }
 
     @Override
@@ -110,10 +112,20 @@ public class loginActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     }
+                } else if (!isConnectedToInternet()) {
+                    Toast.makeText(getApplicationContext(), "Check your Internet connection and Try again", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "Invalid Credentials", Toast.LENGTH_LONG).show();
                 }
             });
         }
+    }
+
+    public boolean isConnectedToInternet() {
+        ConnectivityManager cm =
+                (ConnectivityManager) loginActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
     }
 }
