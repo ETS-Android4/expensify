@@ -463,6 +463,33 @@ public class homeFragment extends Fragment {
 
                             }
                         });
+                        homeRef3.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                String budget = snapshot.getValue(String.class);
+                                if (getContext() != null) {
+                                    if (budget == null) {
+                                        budget = "0";
+                                    } else if (Integer.parseInt(Objects.requireNonNull(budget)) < totalExpense) {
+                                        homeBudget.setText("Budget Exceeded!");
+                                        homeBudget.setTextColor(requireContext().getResources().getColor(R.color.red));
+                                    } else if (Integer.parseInt(budget) * 0.8 <= totalExpense && Integer.parseInt(budget) * 0.9 >= totalExpense) {
+                                        homeBudget.setTextColor(requireContext().getResources().getColor(R.color.warning));
+                                        Toast.makeText(requireContext(), "80% Budget Limit Reached!", Toast.LENGTH_LONG).show();
+                                    } else if (Integer.parseInt(budget) * 0.5 <= totalExpense) {
+                                        homeBudget.setTextColor(requireContext().getResources().getColor(R.color.warning));
+                                        Toast.makeText(requireContext(), "50% Budget Limit Reached!", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        homeBudget.setTextColor(requireContext().getResources().getColor(R.color.green));
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
                     } else {
                         Toast.makeText(getContext(), "Task Failed", Toast.LENGTH_SHORT).show();
                     }
@@ -743,61 +770,61 @@ public class homeFragment extends Fragment {
                 if (budget == null) {
                     homeBudget.setText("Budget: 0" + currencyAdapter.setUserCurrency());
                 } else {
-                    homeBudget.setText("Budget: " + budget + currencyAdapter.setUserCurrency());
-                    homeRef.addValueEventListener(new ValueEventListener() {
-                        @SuppressWarnings("unchecked")
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            totalExpense = 0;
-                            for (DataSnapshot d : snapshot.getChildren()) {
-                                Map<String, Object> map = (Map<String, Object>) d.getValue();
-                                Object total = null;
-                                if (map != null) {
-                                    total = map.get("amount");
-                                }
-                                Object type = null;
-                                if (map != null) {
-                                    type = map.get("type");
-                                }
-                                if (String.valueOf(type).equals("expense")) {
-                                    int pTotal = Integer.parseInt(String.valueOf(total));
-                                    totalExpense += pTotal;
-                                }
-                            }
-                            homeRef3.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    String budget = snapshot.getValue(String.class);
-                                    if (getContext() != null) {
-                                        if (budget == null) {
-                                            budget = "0";
-                                        } else if (Integer.parseInt(Objects.requireNonNull(budget)) < totalExpense) {
-                                            homeBudget.setText("Budget Exceeded!");
-                                            homeBudget.setTextColor(requireContext().getResources().getColor(R.color.red));
-                                        } else if (Integer.parseInt(budget) * 0.8 <= totalExpense && Integer.parseInt(budget) * 0.9 >= totalExpense) {
-                                            homeBudget.setTextColor(requireContext().getResources().getColor(R.color.warning));
-                                            Toast.makeText(requireContext(), "80% Budget Limit Reached!", Toast.LENGTH_SHORT).show();
-                                        } else if (Integer.parseInt(budget) * 0.5 <= totalExpense) {
-                                            homeBudget.setTextColor(requireContext().getResources().getColor(R.color.warning));
-                                            Toast.makeText(requireContext(), "50% Budget Limit Reached!", Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            homeBudget.setTextColor(requireContext().getResources().getColor(R.color.green));
-                                        }
+                    if (getContext() != null) {
+                        homeBudget.setText("Budget: " + budget + currencyAdapter.setUserCurrency());
+                        homeRef.addValueEventListener(new ValueEventListener() {
+                            @SuppressWarnings("unchecked")
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                totalExpense = 0;
+                                for (DataSnapshot d : snapshot.getChildren()) {
+                                    Map<String, Object> map = (Map<String, Object>) d.getValue();
+                                    Object total = null;
+                                    if (map != null) {
+                                        total = map.get("amount");
+                                    }
+                                    Object type = null;
+                                    if (map != null) {
+                                        type = map.get("type");
+                                    }
+                                    if (String.valueOf(type).equals("expense")) {
+                                        int pTotal = Integer.parseInt(String.valueOf(total));
+                                        totalExpense += pTotal;
                                     }
                                 }
+                                homeRef3.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        String budget = snapshot.getValue(String.class);
+                                        if (getContext() != null) {
+                                            if (budget == null) {
+                                                budget = "0";
+                                            } else if (Integer.parseInt(Objects.requireNonNull(budget)) < totalExpense) {
+                                                homeBudget.setText("Budget Exceeded!");
+                                                homeBudget.setTextColor(requireContext().getResources().getColor(R.color.red));
+                                            } else if (Integer.parseInt(budget) * 0.8 <= totalExpense && Integer.parseInt(budget) * 0.9 >= totalExpense) {
+                                                homeBudget.setTextColor(requireContext().getResources().getColor(R.color.warning));
+                                            } else if (Integer.parseInt(budget) * 0.5 <= totalExpense) {
+                                                homeBudget.setTextColor(requireContext().getResources().getColor(R.color.warning));
+                                            } else {
+                                                homeBudget.setTextColor(requireContext().getResources().getColor(R.color.green));
+                                            }
+                                        }
+                                    }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
 
-                                }
-                            });
-                        }
+                                    }
+                                });
+                            }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
 
-                        }
-                    });
+                            }
+                        });
+                    }
                 }
             }
 
