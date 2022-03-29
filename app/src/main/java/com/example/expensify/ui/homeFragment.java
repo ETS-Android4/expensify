@@ -40,7 +40,6 @@ import java.util.Map;
 import java.util.Objects;
 
 public class homeFragment extends Fragment {
-    public List<expenseModel> transList = new ArrayList<>();
     public ConstraintLayout homeLayout;
     public ImageView budgetNullAvatar, walletNullAvatar, budgetExdAvatar;
     public Button expenseBtn, incomeBtn, categoryBtnExpense, categoryBtnIncome;
@@ -53,12 +52,14 @@ public class homeFragment extends Fragment {
     TextView homeBudget, walletBalance, recTrans;
     FirebaseDatabase database, database2, database3, database4;
     DatabaseReference homeRef, homeRef2, homeRef3, homeRef4;
+    private List<expenseModel> transList = new ArrayList<>();
 
     @Override
-    public void onStart() {
-        super.onStart();
-        currencyAdapter.setUserCurrency();
+    public void onResume() {
+        super.onResume();
+        transList = new ArrayList<>();
         getTransactions();
+        currencyAdapter.setUserCurrency();
         getWalletBalance();
         getBudgetBalance();
     }
