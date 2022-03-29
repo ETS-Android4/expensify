@@ -57,12 +57,14 @@ public class expenseAdapter extends BaseAdapter {
         homeNote.setText("Note: " + arrayList.get(position).getNote());
         homeDate.setText("Date: " + arrayList.get(position).getDate());
 
-        if (arrayList.get(position).getType().equals("income")) {
-            type.setText("+" + arrayList.get(position).getAmount() + currencyAdapter.setUserCurrency());
-            type.setTextColor(Color.parseColor("#08a373"));
-        } else {
-            type.setText("-" + arrayList.get(position).getAmount() + currencyAdapter.setUserCurrency());
-            type.setTextColor(Color.parseColor("#FD3C4A"));
+        if (context != null) {
+            if (arrayList.get(position).getType().equals("income")) {
+                type.setText("+" + arrayList.get(position).getAmount() + currencyAdapter.setUserCurrency());
+                type.setTextColor(Color.parseColor("#08a373"));
+            } else {
+                type.setText("-" + arrayList.get(position).getAmount() + currencyAdapter.setUserCurrency());
+                type.setTextColor(Color.parseColor("#FD3C4A"));
+            }
         }
         return convertView;
     }
