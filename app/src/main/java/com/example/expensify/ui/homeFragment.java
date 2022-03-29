@@ -505,6 +505,7 @@ public class homeFragment extends Fragment {
 
                             }
                         });
+                        Toast.makeText(getContext(), "Expense Added", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getContext(), "Task Failed", Toast.LENGTH_SHORT).show();
                     }
