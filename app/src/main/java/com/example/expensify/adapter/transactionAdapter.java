@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -267,11 +266,9 @@ public class transactionAdapter extends BaseAdapter {
             progressDialog.setMessage("Deleting...");
             progressDialog.show();
             reference.child(postid).removeValue().addOnCompleteListener(task -> {
-                CardView cardView = ((Activity) context).findViewById(R.id.cardView);
                 if (task.isSuccessful()) {
-                    if (context != null) {
+                    if (this.context != null) {
                         progressDialog.dismiss();
-                        cardView.setAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_out));
                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("UserBank").child("Wallet");
                         ref.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
