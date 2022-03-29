@@ -11,7 +11,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:backgroundTint="#F0F0F0"
         app:cardCornerRadius="20dp">
 
@@ -56,7 +56,7 @@
                 android:fontFamily="@font/poppins"
                 android:text="email"
                 android:textAlignment="center"
-                android:textSize="14sp" />
+                android:textSize="13sp" />
 
 
             <LinearLayout
