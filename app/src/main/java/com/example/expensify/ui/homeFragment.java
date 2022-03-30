@@ -35,6 +35,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -742,6 +743,8 @@ public class homeFragment extends Fragment {
                 if (transList.size() > 0) {
                     expenseAdapter adapter = new expenseAdapter(getContext(), (ArrayList<expenseModel>) transList);
                     listView.setAdapter(adapter);
+                    Collections.reverse(transList);
+                    adapter.notifyDataSetChanged();
                 }
             }
 
