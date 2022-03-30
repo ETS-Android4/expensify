@@ -28,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -90,6 +91,7 @@ public class transactionFragment extends Fragment {
                 if (transList.size() > 0) {
                     transactionAdapter adapter = new transactionAdapter(getContext(), (ArrayList<expenseModel>) transList);
                     listView.setAdapter(adapter);
+                    Collections.reverse(transList);
                     adapter.notifyDataSetChanged();
                 }
                 homeRef.removeEventListener(this);
@@ -279,6 +281,7 @@ public class transactionFragment extends Fragment {
         if (fStocks != null) {
             fStocks.setOnClickListener(v -> {
                 filterCategory("Stocks");
+                bottomSheetDialog.dismiss();
             });
         }
 
