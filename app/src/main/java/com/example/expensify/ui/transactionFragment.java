@@ -313,9 +313,10 @@ public class transactionFragment extends Fragment {
                         if (list.size() > 0) {
                             transactionAdapter adapter = new transactionAdapter(getContext(), list);
                             listView.setAdapter(adapter);
+                            Collections.reverse(list);
                             adapter.notifyDataSetChanged();
                         } else {
-                            Toast.makeText(getContext(), "No Transactions to Filter", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "No " + type + " Transactions to Filter", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -348,6 +349,7 @@ public class transactionFragment extends Fragment {
                         if (list.size() > 0) {
                             transactionAdapter adapter = new transactionAdapter(getContext(), list);
                             listView.setAdapter(adapter);
+                            Collections.reverse(list);
                             adapter.notifyDataSetChanged();
                         } else {
                             Toast.makeText(getContext(), "No " + category + " Transactions to filter", Toast.LENGTH_SHORT).show();
