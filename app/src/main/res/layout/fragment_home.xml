@@ -523,7 +523,7 @@
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.089"
+            app:layout_constraintVertical_bias="0.0"
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
             app:lottie_rawRes="@raw/circling_wallet" />
@@ -538,7 +538,6 @@
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.633"
             tools:layout_editor_absoluteX="0dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -551,7 +550,8 @@
         android:dividerHeight="1dp"
         android:overScrollMode="never"
         android:paddingBottom="50dp"
-        android:scrollbars="none">
+        android:scrollbars="none"
+        android:transcriptMode="normal">
 
     </ListView>
 
