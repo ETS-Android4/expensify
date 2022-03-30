@@ -110,30 +110,32 @@ public class transactionFragment extends Fragment {
         myDialog.setPositiveButton("Delete", (dialog, which) -> homeRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (getContext() != null) {
+                if (getActivity() != null) {
                     if (dataSnapshot.getValue() == null) {
                         Toast.makeText(getContext(), "No Transactions to Delete", Toast.LENGTH_SHORT).show();
                     } else {
-                        homeRef.removeValue();
-                        userBankRef.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.getValue() == null) {
-                                    Toast.makeText(getContext(), "No Transactions to Delete", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    userBankRef.removeValue();
+                        if (getActivity() != null) {
+                            homeRef.removeValue();
+                            userBankRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.getValue() == null) {
+                                        Toast.makeText(getContext(), "No Transactions to Delete", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        userBankRef.removeValue();
+                                    }
+                                    userBankRef.removeEventListener(this);
                                 }
-                                userBankRef.removeEventListener(this);
-                            }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
 
-                            }
-                        });
-                        Intent i = new Intent(getContext(), userDashboard.class);
-                        startActivity(i);
-                        Toast.makeText(getContext(), "All Transactions Deleted!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            Intent i = new Intent(getContext(), userDashboard.class);
+                            startActivity(i);
+                            Toast.makeText(getContext(), "All Transactions Deleted!", Toast.LENGTH_SHORT).show();
+                        }
                     }
                     homeRef.removeEventListener(this);
                 }
