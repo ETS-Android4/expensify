@@ -44,7 +44,7 @@ public class homeFragment extends Fragment {
     public ConstraintLayout homeLayout;
     public ImageView budgetNullAvatar, walletNullAvatar, budgetExdAvatar;
     public Button expenseBtn, incomeBtn, categoryBtnExpense, categoryBtnIncome;
-    public TextView tv1Pt, tv2Pt, tv3Pt, tv4Pt, tv5Pt, tv6Pt, tv7Pt, tv8Pt, tv9Pt, tv10Pt, tv11Pt, tv12Pt, tv13Pt;
+    public TextView tv1Pt, tv2Pt, tv3Pt, tv4Pt, tv5Pt, tv6Pt, tv7Pt, tv8Pt, tv9Pt, tv10Pt, tv11Pt, tv12Pt, tv13Pt, trans_time;
     public ProgressDialog progressDialog;
     public String mAmount, mNotes, category;
     public Integer totalExpense;
@@ -354,6 +354,17 @@ public class homeFragment extends Fragment {
                 progressDialog.show();
 
                 String id = ref.push().getKey();
+
+                Calendar calendar = Calendar.getInstance();
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+                String time = "" + format.format(calendar.getTime());
+                if (calendar.get(Calendar.HOUR_OF_DAY) > 12) {
+                    time = "" + (calendar.get(Calendar.HOUR_OF_DAY) - 12) + ":" + calendar.get(Calendar.MINUTE) + " PM";
+                } else if (calendar.get(Calendar.MINUTE) < 10) {
+                    time = "" + calendar.get(Calendar.HOUR_OF_DAY) + ":0" + calendar.get(Calendar.MINUTE);
+                } else {
+                    time = "" + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + " AM";
+                }
                 @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
                 Calendar cal = Calendar.getInstance();
 
@@ -361,7 +372,7 @@ public class homeFragment extends Fragment {
                 if (mAmount.contains(".")) {
                     mAmount = mAmount.substring(0, mAmount.indexOf("."));
                 }
-                expenseModel data = new expenseModel(category, mNotes, id, date, Integer.parseInt(mAmount), "income");
+                expenseModel data = new expenseModel(category, mNotes, id, date, Integer.parseInt(mAmount), "income", time);
                 ref.child(Objects.requireNonNull(id)).setValue(data).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         progressDialog.dismiss();
@@ -439,6 +450,17 @@ public class homeFragment extends Fragment {
                 progressDialog.setMessage("Adding Expense...");
                 progressDialog.show();
                 String id = ref.push().getKey();
+
+                Calendar calendar = Calendar.getInstance();
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+                String time = "" + format.format(calendar.getTime());
+                if (calendar.get(Calendar.HOUR_OF_DAY) > 12) {
+                    time = "" + (calendar.get(Calendar.HOUR_OF_DAY) - 12) + ":" + calendar.get(Calendar.MINUTE) + " PM";
+                } else if (calendar.get(Calendar.MINUTE) < 10) {
+                    time = "" + calendar.get(Calendar.HOUR_OF_DAY) + ":0" + calendar.get(Calendar.MINUTE);
+                } else {
+                    time = "" + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + " AM";
+                }
                 @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
                 Calendar cal = Calendar.getInstance();
 
@@ -446,7 +468,7 @@ public class homeFragment extends Fragment {
                 if (mAmount.contains(".")) {
                     mAmount = mAmount.substring(0, mAmount.indexOf("."));
                 }
-                expenseModel data = new expenseModel(category, mNotes, id, date, Integer.parseInt(mAmount), "expense");
+                expenseModel data = new expenseModel(category, mNotes, id, date, Integer.parseInt(mAmount), "expense", time);
                 ref.child(Objects.requireNonNull(id)).setValue(data).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         progressDialog.dismiss();
@@ -863,7 +885,6 @@ public class homeFragment extends Fragment {
         bottomSheetDialog.show();
         walletNullAvatar = bottomSheetDialog.findViewById(R.id.walletNullAvatar);
         setImageResource(walletNullAvatar, R.drawable.image23, R.drawable.image24, R.drawable.image25, R.drawable.image26, R.drawable.image27, R.drawable.image28);
-
     }
 
     public void showBudgetAlert() {

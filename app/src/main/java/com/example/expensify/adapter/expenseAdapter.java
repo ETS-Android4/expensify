@@ -46,16 +46,19 @@ public class expenseAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(context).inflate(R.layout.expense_adapter, parent, false);
         }
 
-        TextView homeCategory, homeNote, homeDate, type;
+        TextView homeCategory, homeNote, homeDate, type, trans_time;
 
         homeCategory = convertView.findViewById(R.id.home_category);
         homeNote = convertView.findViewById(R.id.home_note);
         homeDate = convertView.findViewById(R.id.home_date);
         type = convertView.findViewById(R.id.expense_amount);
+        trans_time = convertView.findViewById(R.id.time);
 
         homeCategory.setText(arrayList.get(position).getCategory());
         homeNote.setText("Note: " + arrayList.get(position).getNote());
         homeDate.setText("Date: " + arrayList.get(position).getDate());
+        trans_time.setText("" + arrayList.get(position).getTime());
+        trans_time.setTextColor(Color.parseColor("#6200EE"));
 
         if (context != null) {
             if (arrayList.get(position).getType().equals("income")) {

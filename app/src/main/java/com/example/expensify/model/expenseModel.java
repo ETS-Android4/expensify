@@ -3,20 +3,21 @@ package com.example.expensify.model;
 import java.io.Serializable;
 
 public class expenseModel implements Serializable {
-    private String category, note, id, date;
+    private String category, note, id, date, time;
     private int amount;
     private String type;
 
     public expenseModel() {
     }
 
-    public expenseModel(String category, String note, String id, String date, int amount, String type) {
+    public expenseModel(String category, String note, String id, String date, int amount, String type, String time) {
         this.category = category;
         this.note = note;
         this.id = id;
         this.date = date;
         this.amount = amount;
         this.type = type;
+        this.time = time;
     }
 
     public String getCategory() {
@@ -67,4 +68,11 @@ public class expenseModel implements Serializable {
         this.type = type;
     }
 
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 }

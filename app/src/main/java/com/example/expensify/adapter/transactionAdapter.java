@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +41,7 @@ public class transactionAdapter extends BaseAdapter {
     public String wallet;
     Context context;
     ArrayList<expenseModel> arrayList;
-    TextView homeCategory, homeAmount, homeNote, homeDate;
+    TextView homeCategory, homeAmount, homeNote, homeDate, trans_time;
     private String postid;
     private String note;
     private int amount;
@@ -86,6 +87,7 @@ public class transactionAdapter extends BaseAdapter {
         cardView = convertView.findViewById(R.id.cardView);
 
         imageView = convertView.findViewById(R.id.imageView);
+        trans_time = convertView.findViewById(R.id.trans_time);
 
         if (data.getType().equals("expense")) {
             homeCategory.setText(arrayList.get(position).getCategory());
@@ -93,12 +95,16 @@ public class transactionAdapter extends BaseAdapter {
             homeAmount.setTextColor(context.getResources().getColor(R.color.red));
             homeNote.setText("Note: " + arrayList.get(position).getNote());
             homeDate.setText("Date: " + arrayList.get(position).getDate());
+            trans_time.setText("" + arrayList.get(position).getTime());
+            trans_time.setTextColor(Color.parseColor("#6200EE"));
         } else {
             homeCategory.setText(arrayList.get(position).getCategory());
             homeAmount.setText("+" + arrayList.get(position).getAmount() + currencyAdapter.setUserCurrency());
             homeAmount.setTextColor(context.getResources().getColor(R.color.green));
             homeNote.setText("Note: " + arrayList.get(position).getNote());
             homeDate.setText("Date: " + arrayList.get(position).getDate());
+            trans_time.setText("" + arrayList.get(position).getTime());
+            trans_time.setTextColor(Color.parseColor("#6200EE"));
         }
 
         switch (data.getType()) {
@@ -196,6 +202,7 @@ public class transactionAdapter extends BaseAdapter {
             homeNote = ((Activity) context).findViewById(R.id.transaction_note);
             amount = Integer.parseInt(mAmount.getText().toString());
             note = mNote.getText().toString();
+
             homeAmount.setText("Amount: " + amount + currencyAdapter.setUserCurrency());
             homeNote.setText("Note: " + note);
 
@@ -203,7 +210,18 @@ public class transactionAdapter extends BaseAdapter {
             Calendar cal = Calendar.getInstance();
             String date = dateFormat.format(cal.getTime());
 
-            expenseModel data = new expenseModel(category, note, postid, date, amount, type);
+            Calendar calendar = Calendar.getInstance();
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+            String time = "" + format.format(calendar.getTime());
+            if (calendar.get(Calendar.HOUR_OF_DAY) > 12) {
+                time = "" + (calendar.get(Calendar.HOUR_OF_DAY) - 12) + ":" + calendar.get(Calendar.MINUTE) + " PM";
+            } else if (calendar.get(Calendar.MINUTE) < 10) {
+                time = "" + calendar.get(Calendar.HOUR_OF_DAY) + ":0" + calendar.get(Calendar.MINUTE);
+            } else {
+                time = "" + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + " AM";
+            }
+
+            expenseModel data = new expenseModel(category, note, postid, date, amount, type, time);
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("Transactions");
             progressDialog.setMessage("Updating...");
             progressDialog.show();
