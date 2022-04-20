@@ -117,7 +117,7 @@ public class transactionAdapter extends BaseAdapter {
                         imageView.setImageResource(R.drawable.stocks);
                         break;
                     case "Others":
-                        imageView.setImageResource(R.drawable.others);
+                        imageView.setImageResource(R.drawable.others_income);
                         break;
                     case "Award":
                         imageView.setImageResource(R.drawable.award);
@@ -152,6 +152,10 @@ public class transactionAdapter extends BaseAdapter {
                         break;
                     case "Rent":
                         imageView.setImageResource(R.drawable.rent);
+                        break;
+                    case "Other":
+                        imageView.setImageResource(R.drawable.others_expense);
+                        break;
                 }
                 break;
             default:
@@ -213,7 +217,7 @@ public class transactionAdapter extends BaseAdapter {
             Calendar calendar = Calendar.getInstance();
             @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("HH:mm");
             String time = "" + format.format(calendar.getTime());
-            if (calendar.get(Calendar.HOUR_OF_DAY) > 12) {
+            if (calendar.get(Calendar.HOUR_OF_DAY) >= 12) {
                 time = "" + (calendar.get(Calendar.HOUR_OF_DAY) - 12) + ":" + calendar.get(Calendar.MINUTE) + " PM";
             } else if (calendar.get(Calendar.MINUTE) < 10) {
                 time = "" + calendar.get(Calendar.HOUR_OF_DAY) + ":0" + calendar.get(Calendar.MINUTE);

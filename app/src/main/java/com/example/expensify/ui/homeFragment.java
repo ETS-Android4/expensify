@@ -44,11 +44,11 @@ public class homeFragment extends Fragment {
     public ConstraintLayout homeLayout;
     public ImageView budgetNullAvatar, walletNullAvatar, budgetExdAvatar;
     public Button expenseBtn, incomeBtn, categoryBtnExpense, categoryBtnIncome;
-    public TextView tv1Pt, tv2Pt, tv3Pt, tv4Pt, tv5Pt, tv6Pt, tv7Pt, tv8Pt, tv9Pt, tv10Pt, tv11Pt, tv12Pt, tv13Pt, trans_time;
+    public TextView tv1Pt, tv2Pt, tv3Pt, tv4Pt, tv5Pt, tv6Pt, tv7Pt, tv8Pt, tv9Pt, tv10Pt, tv11Pt, tv12Pt, tv13Pt, tv14Pt;
     public ProgressDialog progressDialog;
     public String mAmount, mNotes, category;
     public Integer totalExpense;
-    public LinearLayout ll1, ll2, ll3, ll4, ll5, ll6, ll7, ll8, ll9, ll10, ll11, ll12, ll13;
+    public LinearLayout ll1, ll2, ll3, ll4, ll5, ll6, ll7, ll8, ll9, ll10, ll11, ll12, ll13, ll14;
     ListView listView;
     TextView homeBudget, walletBalance, recTrans;
     FirebaseDatabase database, database2, database3, database4;
@@ -91,6 +91,7 @@ public class homeFragment extends Fragment {
         ll11 = view.findViewById(R.id.ll11);
         ll12 = view.findViewById(R.id.ll12);
         ll13 = view.findViewById(R.id.ll13);
+        ll14 = view.findViewById(R.id.ll14);
 
         tv1Pt = view.findViewById(R.id.entertainment_total);
         tv2Pt = view.findViewById(R.id.subscription_total);
@@ -105,6 +106,7 @@ public class homeFragment extends Fragment {
         tv11Pt = view.findViewById(R.id.award_total);
         tv12Pt = view.findViewById(R.id.stocks_total);
         tv13Pt = view.findViewById(R.id.others_total);
+        tv14Pt = view.findViewById(R.id.others_expense_total);
 
         database = FirebaseDatabase.getInstance();
         homeRef = database.getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("Transactions");
@@ -113,7 +115,7 @@ public class homeFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (getContext() != null) {
-                    int entertainment = 0, subscription = 0, healthcare = 0, investment = 0, utilities = 0, transport = 0, shopping = 0, food = 0, rent = 0;
+                    int entertainment = 0, subscription = 0, healthcare = 0, investment = 0, utilities = 0, transport = 0, shopping = 0, food = 0, rent = 0, other = 0;
                     int salary = 0, award = 0, stocks = 0, others = 0;
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         expenseModel model = ds.getValue(expenseModel.class);
@@ -144,6 +146,9 @@ public class homeFragment extends Fragment {
                                 break;
                             case "Rent":
                                 rent += model.getAmount();
+                                break;
+                            case "Other":
+                                other += model.getAmount();
                                 break;
                             case "Salary":
                                 salary += model.getAmount();
@@ -228,6 +233,14 @@ public class homeFragment extends Fragment {
                             ll9.setVisibility(View.VISIBLE);
                             tv9Pt.setText("-" + rent + currencyAdapter.setUserCurrency());
                             tv9Pt.setTextColor(getResources().getColor(R.color.primary_dark));
+                        }
+
+                        if (other == 0) {
+                            ll14.setVisibility(View.GONE);
+                        } else {
+                            ll14.setVisibility(View.VISIBLE);
+                            tv14Pt.setText("-" + other + currencyAdapter.setUserCurrency());
+                            tv14Pt.setTextColor(getResources().getColor(R.color.primary_dark));
                         }
 
                         if (salary == 0) {
@@ -560,6 +573,7 @@ public class homeFragment extends Fragment {
                                 } else if (finalTotalAmount > Integer.parseInt(Objects.requireNonNull(budget))) {
                                     if (getContext() != null) {
                                         showBudgetExceeded();
+                                        expenseBtn.setEnabled(false);
                                     }
                                 }
                                 homeRef3.removeEventListener(this);
@@ -601,6 +615,7 @@ public class homeFragment extends Fragment {
         LinearLayout fShopping = bottomSheetDialog.findViewById(R.id.shopping_layout);
         LinearLayout fFood = bottomSheetDialog.findViewById(R.id.food_layout);
         LinearLayout fRent = bottomSheetDialog.findViewById(R.id.rent_layout);
+        LinearLayout fOthers = bottomSheetDialog.findViewById(R.id.other_layout);
 
         bottomSheetDialog.show();
 
@@ -655,6 +670,12 @@ public class homeFragment extends Fragment {
         if (fRent != null) {
             fRent.setOnClickListener(v -> {
                 categoryBtnExpense.setText("Rent");
+                bottomSheetDialog.dismiss();
+            });
+        }
+        if (fOthers != null) {
+            fOthers.setOnClickListener(v -> {
+                categoryBtnExpense.setText("Other");
                 bottomSheetDialog.dismiss();
             });
         }
