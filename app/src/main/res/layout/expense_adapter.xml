@@ -27,7 +27,7 @@
                     android:fontFamily="@font/poppins"
                     android:text="Item name"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="17sp"
                     android:textStyle="bold" />
 
 
@@ -37,7 +37,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins"
                     android:text="Note"
-                    android:textSize="14sp" />
+                    android:textSize="11sp" />
 
                 <TextView
                     android:id="@+id/home_date"
@@ -45,7 +45,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins"
                     android:text="Date"
-                    android:textSize="14sp" />
+                    android:textSize="11sp" />
 
                 <TextView
                     android:id="@+id/time"
@@ -53,8 +53,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins"
                     android:text="Time"
-                    android:textSize="14sp" />
-
+                    android:textSize="11sp" />
 
 
             </LinearLayout>

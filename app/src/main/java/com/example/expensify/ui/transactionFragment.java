@@ -82,7 +82,7 @@ public class transactionFragment extends Fragment {
                         if (getActivity() != null) {
                             getActivity().runOnUiThread(() -> {
                                 transLayout.setVisibility(View.GONE);
-                                upDel.setText("Click on a Transaction card to Update or Delete your transaction ✌️");
+                                upDel.setText("Click on a Transaction card to Update or Delete your transaction  👍️");
                                 transList.add(p);
                             });
                         }

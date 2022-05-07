@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins"
                 android:text="$ 0"
-                android:textSize="15sp" />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/transaction_note"
@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins"
                 android:text="Note"
-                android:textSize="15sp" />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/transaction_date"
@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins"
                 android:text="Date"
-                android:textSize="15sp" />
+                android:textSize="12sp" />
 
         </LinearLayout>
 
@@ -63,7 +63,8 @@
                 android:id="@+id/imageView"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginBottom="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -72,12 +73,11 @@
                 android:id="@+id/trans_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="0dp"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="10dp"
                 android:text="Time"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.905"
+                app:layout_constraintHorizontal_bias="0.897"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="1.0" />

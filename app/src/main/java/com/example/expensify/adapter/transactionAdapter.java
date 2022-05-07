@@ -215,15 +215,8 @@ public class transactionAdapter extends BaseAdapter {
             String date = dateFormat.format(cal.getTime());
 
             Calendar calendar = Calendar.getInstance();
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("HH:mm");
-            String time = "" + format.format(calendar.getTime());
-            if (calendar.get(Calendar.HOUR_OF_DAY) >= 12) {
-                time = "" + (calendar.get(Calendar.HOUR_OF_DAY) - 12) + ":" + calendar.get(Calendar.MINUTE) + " PM";
-            } else if (calendar.get(Calendar.MINUTE) < 10) {
-                time = "" + calendar.get(Calendar.HOUR_OF_DAY) + ":0" + calendar.get(Calendar.MINUTE);
-            } else {
-                time = "" + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + " AM";
-            }
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
+            String time = timeFormat.format(calendar.getTime());
 
             expenseModel data = new expenseModel(category, note, postid, date, amount, type, time);
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("Transactions");

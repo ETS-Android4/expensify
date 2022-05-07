@@ -23,7 +23,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/search/baseline_search_24.xml" />
+                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/content_paste_search/baseline_content_paste_search_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -33,8 +33,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="6b6b6b" />
-                            <entry key="outputName" value="search" />
+                            <entry key="color" value="ffffff" />
+                            <entry key="outputName" value="expense_report" />
                             <entry key="sourceFile" value="C:\Users\Ayman\AndroidStudioProjects\Expensify" />
                           </map>
                         </option>
